@@ -1,0 +1,72 @@
+version: '3.6'
+
+networks:
+  default:
+    external:
+      name: ###NETWORK###
+
+volumes:
+  dbdata:
+
+services:
+  api:
+    container_name: ###PROJECT_NAME###-api
+    build:
+      context: .
+      dockerfile: build/node/Dockerfile
+    image: ###REGISTRY_URL###/###PROJECT_NAME###:latest
+    volumes:
+      - $PWD:/app:cached
+    working_dir: /app
+    command: sh -c "npm run api:start"
+    restart: "no"
+    env_file: ./build/.env.list
+    networks:
+      default:
+        aliases:
+          - ###PROJECT_NAME###.skymarket.lc
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.###PROJECT_NAME###.loadbalancer.server.port=80
+      - traefik.http.routers.###PROJECT_NAME###.rule=Host(`###PROJECT_NAME###.skymarket.lc`)
+      - traefik.http.routers.###PROJECT_NAME###.entrypoints=web
+    depends_on:
+      - postgresql
+      - webhooks
+
+  test-worker:
+    container_name: ###PROJECT_NAME###-test-worker
+    image: ###REGISTRY_URL###/###PROJECT_NAME###:latest
+    volumes:
+      - $PWD:/app:cached
+    working_dir: /app
+    command: sh -c "npm run test-worker:start"
+    restart: "no"
+    env_file: ./build/.env.list
+    depends_on:
+      - postgresql
+      - webhooks
+
+  webhooks:
+    container_name: ###PROJECT_NAME###-webhooks
+    image: ###REGISTRY_URL###/###PROJECT_NAME###:latest
+    volumes:
+      - $PWD:/app:cached
+    working_dir: /app
+    command: sh -c "npm run webhooks:start"
+    restart: "no"
+    env_file: ./build/.env.list
+
+  postgresql:
+    container_name: ###PROJECT_NAME###-postgresql
+    image: postgres:9.6.6-alpine
+    volumes:
+      - "dbdata:/var/lib/postgresql/data"
+    env_file: ./build/.env.list
+    restart: "no"
+    logging:
+      driver: none
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: database

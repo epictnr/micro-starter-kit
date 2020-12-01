@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: K8S_PROJECT_NAME-api
+  namespace: K8S_NAMESPACE
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    name: K8S_PROJECT_NAME-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: K8S_PROJECT_NAME-webhooks
+  namespace: K8S_NAMESPACE
+spec:
+  ports:
+    - name: metrics
+      port: 8080
+      targetPort: 8080
+  selector:
+    name: K8S_PROJECT_NAME-webhooks
+---

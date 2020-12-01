@@ -1,0 +1,30 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: ###PROJECT_NAME### Api
+servers:
+  - url: /
+    description: Api
+
+paths:
+
+  /system/health:
+    get:
+      summary: Проверка работоспособности сервиса
+      operationId: service-health-check
+      tags:
+        - /system
+      responses:
+        '200':
+          description: Сервис работает
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  current_unix_timestamp:
+                    type: integer
+              example:
+                {
+                  "current_unix_timestamp": 1602242279
+                }

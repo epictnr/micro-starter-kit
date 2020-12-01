@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+export USER_ID=$(id -u)
+export GROUP_ID=$(id -g)
+
+docker run --rm -v $PWD:/app node:14.11-alpine /bin/sh -c 'cd /app; npm i --only=production'
+
+export COMPOSE_FILE=docker-compose.yml
+export COMPOSE_PROJECT=###PROJECT_NAME###
+
+# docker system prune -f -a
+docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN ###REGISTRY_URL###
+docker build -f ./build/node/Dockerfile -t "###REGISTRY_URL###/###PROJECT_NAME###:$CI_COMMIT_SHORT_SHA" ./
+docker push "###REGISTRY_URL###/###PROJECT_NAME###:$CI_COMMIT_SHORT_SHA"

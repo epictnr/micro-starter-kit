@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  builder:
+    image: node:14.11-alpine
+    volumes:
+      - $PWD:/app
+      - $HOME:$HOME
+    working_dir: /app
+    user: $USER_ID:$GROUP_ID
+    command: sh -c "npm i"
+    environment:
+      - NODE_ENV
+      - HOME=$HOME

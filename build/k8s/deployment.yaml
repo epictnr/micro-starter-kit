@@ -1,0 +1,103 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: K8S_PROJECT_NAME-api-deployment
+  namespace: K8S_NAMESPACE
+  labels:
+    name: K8S_PROJECT_NAME-api
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      name: K8S_PROJECT_NAME-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: K8S_PROJECT_NAME-api
+    spec:
+      containers:
+        - name: K8S_PROJECT_NAME-api
+          image: ###REGISTRY_URL###/###PROJECT_NAME###:K8S_IMAGE_TAG
+          imagePullPolicy: Always
+          command: ["node", "bin/api"]
+          resources:
+            limits:
+              memory: "50Mi"
+              cpu: "200m"
+            requests:
+              memory: "50Mi"
+              cpu: "200m"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: NODE_TLS_REJECT_UNAUTHORIZED
+              value: "0"
+            # - name: DATABASE_URL
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: database-access-cred
+            #       key: endpoint
+            - name: WEB_HOOK_ENABLE
+              value: "0"
+            - name: WEB_HOOK_HOST
+              value: "###PROJECT_NAME###-webhooks"
+            # - name: APPLICATION_NAME
+            #   value: "api-K8S_ENVIRONMENT"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: K8S_PROJECT_NAME-webhooks-deployment
+  namespace: K8S_NAMESPACE
+  labels:
+    name: K8S_PROJECT_NAME-webhooks
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      name: K8S_PROJECT_NAME-webhooks
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        name: K8S_PROJECT_NAME-webhooks
+    spec:
+      containers:
+        - name: K8S_PROJECT_NAME-webhooks
+          image: ###REGISTRY_URL###/###PROJECT_NAME###:K8S_IMAGE_TAG
+          imagePullPolicy: Always
+          command: ["node", "bin/webhooks"]
+          resources:
+            limits:
+              memory: "50Mi"
+              cpu: "200m"
+            requests:
+              memory: "50Mi"
+              cpu: "200m"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: NODE_TLS_REJECT_UNAUTHORIZED
+              value: "0"
+            - name: WEB_HOOK_HOST
+              value: 0.0.0.0
+          #   - name: APPLICATION_NAME
+          #     value: "webhooks-K8S_ENVIRONMENT"
+---

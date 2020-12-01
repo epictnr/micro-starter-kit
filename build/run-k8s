@@ -1,0 +1,30 @@
+#!/bin/sh
+set -e
+
+export PROJECT_NAME=###PROJECT_NAME###
+export NAMESPACE=###PROJECT_NAME###-prod
+
+rm -rf ./build/k8s-for-stage
+cp -r ./build/k8s ./build/k8s-for-stage
+
+# only macOs
+# keysToReplace=(
+#     "s~K8S_PROJECT_NAME~$PROJECT_NAME~g"
+#     "s~K8S_NAMESPACE~$NAMESPACE~g"
+#     "s~K8S_IMAGE_TAG~$CI_COMMIT_SHORT_SHA~g"
+# )
+
+# for regExp in "${keysToReplace[@]}"; do
+#     sed -i '' -e $regExp ./build/k8s-for-stage/*.yaml
+# done
+
+sed -i \
+-e "s~K8S_PROJECT_NAME~$PROJECT_NAME~g" \
+-e "s~K8S_NAMESPACE~$NAMESPACE~g" \
+-e "s~K8S_IMAGE_TAG~$CI_COMMIT_SHORT_SHA~g" \
+./build/k8s-for-stage/**.yaml
+
+echo "$K8S_CONFIG" > ./build/k8s-for-stage/epictnr-k8s.kubeconfig
+
+kubectl apply -f ./build/k8s-for-stage/deployment.yaml --kubeconfig=./build/k8s-for-stage/epictnr-k8s.kubeconfig -n ${NAMESPACE}
+kubectl apply -f ./build/k8s-for-stage/service.yaml    --kubeconfig=./build/k8s-for-stage/epictnr-k8s.kubeconfig -n ${NAMESPACE}

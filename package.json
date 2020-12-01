@@ -1,0 +1,48 @@
+{
+  "name": "###PROJECT_NAME###",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
+  },
+  "scripts": {
+    "api:start": "nodemon bin/api --exec 'npm run lint:js && node'",
+    "test-worker:start": "nodemon bin/test-worker --exec 'npm run lint:js && node'",
+    "webhooks:start": "nodemon bin/webhooks --exec 'npm run lint:js && node'",
+    "lint:js": "eslint ./app --color",
+    "test": "jest"
+  },
+  "author": "SpaceCats",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@epictnr/express-helper": "^1.0.0",
+    "@epictnr/logger": "^1.0.0",
+    "@epictnr/metrics": "^1.0.0",
+    "@epictnr/pg-em": "^1.2.0",
+    "@epictnr/webhooks": "^1.0.0",
+    "body-parser": "^1.18.3",
+    "cron": "^1.8.2",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.0.1",
+    "moment": "^2.24.0",
+    "node-fetch": "^2.6.1",
+    "pg": "^8.4.1",
+    "node-pg-migrate": "^5.8.0"
+  },
+  "devDependencies": {
+    "@epictnr/eslint-config-epictnr": "^1.0.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.8.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-react-hooks": "^4.1.2",
+    "eslint-plugin-standard": "^4.0.0",
+    "jest": "^24.1.0",
+    "nodemon": "^1.18.9"
+  }
+}

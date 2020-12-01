@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "--------------------------------"
+echo " Generate service from template!"
+echo "--------------------------------"
+echo ""
+
+keysToReplace=(
+    'PROJECT_NAME'
+    'NETWORK'
+    'REGISTRY_URL'
+)
+
+valuesToReplace=()
+
+echo "Setted value for var:"
+
+newProjectName=''
+
+for i in "${!keysToReplace[@]}"; do
+    keyToReplace=${keysToReplace[$i]}
+
+    read -p "$keyToReplace: " settedValue
+    valuesToReplace[$i]=$settedValue
+
+    if [ $keyToReplace == 'PROJECT_NAME' ]; then
+        newProjectName=$settedValue
+    fi
+done
+
+echo ""
+echo "--------------------------------"
+echo " Check and confirm!"
+echo "--------------------------------"
+echo ""
+
+for i in "${!keysToReplace[@]}"; do
+    echo "${keysToReplace[$i]} = ${valuesToReplace[$i]}"
+done
+
+echo ""
+
+read -p "Continue (Y/n)?" choice
+if [ "$choice" != "Y" ]; then
+  echo "exit..."
+  exit 0
+fi
+
+echo ""
+echo "--------------------------------"
+echo " Creating project - ${newProjectName}!"
+echo "--------------------------------"
+echo ""
+
+
+newProjectPath="../${newProjectName}"
+
+if [ -d "$newProjectPath" ]; then
+  echo "Folder ${newProjectPath} already exist!"
+  exit 1
+fi
+
+#copy all project files
+mkdir $newProjectPath
+
+echo ""
+echo "Copy project files:"
+echo ""
+
+currentScriptName="build/$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+rsync -av ./ $newProjectPath --exclude .git --exclude $currentScriptName
+
+cd $newProjectPath
+
+for i in "${!keysToReplace[@]}"; do
+    keyToFind="###${keysToReplace[$i]}###"
+    valueToReplace=${valuesToReplace[$i]}
+
+    echo ""
+    echo "--------------------------------"
+    echo " Replace"
+    echo " ${keyToFind} => ${valueToReplace}"
+
+    grep -rl $keyToFind . | xargs sed -i '' -e "s/${keyToFind}/${valueToReplace}/g"
+
+    echo " Done"
+    echo "--------------------------------"
+done
+    echo ""
+    echo "--------------------------------"
+    echo " Init empty git repository!"
+    echo "--------------------------------"
+
+    git init
+
+    echo ""
+    echo "--------------------------------"
+    echo " Done!"
+    echo "--------------------------------"
+    echo ""
