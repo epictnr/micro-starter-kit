@@ -24,11 +24,11 @@ services:
     networks:
       default:
         aliases:
-          - ###PROJECT_NAME###.skymarket.lc
+          - ###PROJECT_NAME###.dev.lc
     labels:
       - traefik.enable=true
       - traefik.http.services.###PROJECT_NAME###.loadbalancer.server.port=80
-      - traefik.http.routers.###PROJECT_NAME###.rule=Host(`###PROJECT_NAME###.skymarket.lc`)
+      - traefik.http.routers.###PROJECT_NAME###.rule=Host(`###PROJECT_NAME###.dev.lc`)
       - traefik.http.routers.###PROJECT_NAME###.entrypoints=web
     depends_on:
       - postgresql
