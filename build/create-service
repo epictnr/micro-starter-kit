@@ -83,7 +83,7 @@ for i in "${!keysToReplace[@]}"; do
     echo " Replace"
     echo " ${keyToFind} => ${valueToReplace}"
 
-    grep -rl $keyToFind . | xargs sed -i '' -e "s/${keyToFind}/${valueToReplace}/g"
+    grep -rl $keyToFind . | xargs sed -i '' -e "s~${keyToFind}~${valueToReplace}~g"
 
     echo " Done"
     echo "--------------------------------"
