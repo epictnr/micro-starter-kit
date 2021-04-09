@@ -12,7 +12,7 @@
     "test-worker:start": "nodemon bin/test-worker --exec 'npm run lint:js && node'",
     "webhooks:start": "nodemon bin/webhooks --exec 'npm run lint:js && node'",
     "lint:js": "eslint ./app --color",
-    "lint:schema": "docker run --volume $PWD:/data jamescooke/openapi-validator /data/public/schema/schema.yaml",
+    "lint:schema": "docker run --name openapi-validator --rm --volume $PWD:/data jamescooke/openapi-validator /data/public/schema/schema.yaml",
     "test": "jest"
   },
   "author": "SpaceCats",
