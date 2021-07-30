@@ -1,15 +1,8 @@
 
-###PROJECT_NAME###
+Micro Starter Kit 🤙
 ======
 
-#### Dev-окружение
-* Запуск dev-окружения:
+#### Создание нового сервиса
 ```bash
-./build/run-dev
-```
-
-* Накатить миграции:
-```bash
-docker exec -ti ###PROJECT_NAME###-api sh
-./node_modules/.bin/node-pg-migrate up
+./build/create-service
 ```

@@ -9,7 +9,7 @@ echo ""
 
 keysToReplace=(
     'PROJECT_NAME'
-    'NETWORK'
+    'NETWORK_NAME'
     'REGISTRY_URL'
 )
 
@@ -80,7 +80,7 @@ for i in "${!keysToReplace[@]}"; do
 
     echo ""
     echo "--------------------------------"
-    echo " Replace"
+    echo " Replace                        "
     echo " ${keyToFind} => ${valueToReplace}"
 
     grep -rl $keyToFind . | xargs sed -i '' -e "s~${keyToFind}~${valueToReplace}~g"
@@ -90,13 +90,25 @@ for i in "${!keysToReplace[@]}"; do
 done
     echo ""
     echo "--------------------------------"
-    echo " Init empty git repository!"
+    echo " Init empty git repository!     "
     echo "--------------------------------"
 
     git init
 
     echo ""
     echo "--------------------------------"
-    echo " Done!"
+    echo " Done!                          "
+    echo "--------------------------------"
+    echo ""
+
+    echo ""
+    echo "--------------------------------"
+    echo " Prepare service readme!        "
+    echo ""
+
+    rm -rf README.md
+    mv README-project.md README.md
+
+    echo " Done!                          "
     echo "--------------------------------"
     echo ""

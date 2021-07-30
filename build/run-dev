@@ -7,6 +7,8 @@ export DEV_MODE=true
 
 export $(cat ./build/.env.base.dev)
 
+docker network ls|grep ###NETWORK_NAME### > /dev/null || docker network create --driver bridge ###NETWORK_NAME### && echo "Create new network - ###NETWORK_NAME###"
+
 docker-compose -f docker-compose.build.yml run --rm -T builder
 
 export COMPOSE_FILE=docker-compose.yml
